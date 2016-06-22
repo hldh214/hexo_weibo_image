@@ -116,7 +116,7 @@ def get_image(image_path, username=None, password=None):
             login(form_data)
             url = request_image_url(image_path)
         except Exception, e:
-            print "登录失败,程序退出"
+            print "登录失败, 程序退出"
             exit()
     return url
 
