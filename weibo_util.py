@@ -12,13 +12,13 @@ import urllib2
 import binascii
 import base64
 from optparse import OptionParser
+from random import choice
 
 cookie_file = 'cookie.txt'
 config = {
     'weibo_usn': '',
     'weibo_pwd': '',
     'weibo_domain': [1, 2, 3, 4],
-    
 }
 
 def pre_login():
@@ -88,7 +88,7 @@ def login(form_data):
     cookie.save(cookie_file, ignore_discard=True, ignore_expires=True)
 
 
-def request_image_url(image_path):
+def request_image_url(image_path, image_size='large'):
     cookie = cookielib.MozillaCookieJar()
     cookie.load(cookie_file, ignore_expires=True, ignore_discard=True)
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie))
@@ -99,7 +99,7 @@ def request_image_url(image_path):
     result = re.sub(r"<meta.*</script>", "", result)
     image_result = json.loads(result)
     image_id = image_result.get('data').get('pics').get('pic_1').get('pid')
-    return 'http://ww4.sinaimg.cn/large/%s' % image_id
+    return 'http://ww{0}.sinaimg.cn/{1}/{2}'.format(choice(config['weibo_domain']), image_size, image_id)
 
 
 def get_image(image_path, username=None, password=None):
