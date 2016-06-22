@@ -116,12 +116,11 @@ def get_image(image_path, username=None, password=None):
 
 
 if __name__ == '__main__':
-    usage = "usage: %prog [options] arg"
-    parser = OptionParser(usage)
+    parser = OptionParser()
     parser.add_option("-f", "--file", dest='filepath', help='image file path')
     parser.add_option("-u", "--username", dest="username", help="weibo username")
     parser.add_option("-p", "--password", dest="password", help="weibo password")
-    (options, args) = parser.parse_args()
+    options, args = parser.parse_args()
     filename = options.filepath
     username = options.username
     password = options.password
