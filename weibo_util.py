@@ -1,5 +1,6 @@
 # encoding:utf8
-__author__ = 'brianyang'
+__author__  =  'brianyang'
+__modify__ = 'hldh214@gmail.com'
 
 import re
 import json
@@ -13,7 +14,6 @@ import base64
 from optparse import OptionParser
 
 cookie_file = 'cookie.txt'
-
 
 def pre_login():
     pre_login_url = 'http://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=MTUyNTUxMjY3OTY%3D&rsakt=mod&checkpin=1&client=ssologin.js%28v1.4.18%29&_=1458836718537'
@@ -48,7 +48,7 @@ def generate_form_data(nonce, pubkey, servertime, rsakv, username, password):
         'from': '',
         'savestate': '7',
         'useticket': '1',
-        'pagerefer': 'http://weibo.com/p/1005052679342531/home?from=page_100505&mod=TAB&pids=plc_main',
+        'pagerefer': 'http://weibo.com/',
         'vsnf': '1',
         'su': username,
         'service': 'miniblog',
