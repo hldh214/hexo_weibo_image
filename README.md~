@@ -18,8 +18,6 @@ forked from [trytofix](https://github.com/trytofix/hexo_weibo_image)
 ```
 微博账号按所给格式加到weibo_account里, 脚本检测到账号不能登陆会自动切换下一个账号进行后续操作
 
-测试脚本
-
 ``` bash
 python weibo_util.py -f /path/to/the/image
 ```

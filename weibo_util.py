@@ -13,10 +13,8 @@ import binascii
 import base64
 from optparse import OptionParser
 from random import choice
-# import weibo_conf
 
-# print weibo_conf
-# exit()
+config = json.load(file('./weibo_conf.json'))
 
 def pre_login():
     pre_login_url = 'http://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=MTUyNTUxMjY3OTY%3D&rsakt=mod&checkpin=1&client=ssologin.js%28v1.4.18%29&_=1458836718537'
@@ -73,21 +71,27 @@ def generate_form_data(nonce, pubkey, servertime, rsakv, username, password):
 def login(form_data):
     url = 'http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.18)'
     headers = ('User-Agent', 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:41.0) Gecko/20100101 Firefox/41.0')
-    cookie = cookielib.MozillaCookieJar(cookie_file)
+    cookie = cookielib.MozillaCookieJar(config['cookie_file'])
     handler = urllib2.HTTPCookieProcessor(cookie)
     opener = urllib2.build_opener(handler)
     opener.addheaders.append(headers)
     req = opener.open(url, form_data)
     redirect_result = req.read()
     login_pattern = r'location.replace\(\'(.*?)\'\)'
-    login_url = re.search(login_pattern, redirect_result).group(1)
+    try:
+        login_url = re.search(login_pattern, redirect_result).group(1)
+    except Exception, e:
+        # login failed
+        # print e
+        return False
     opener.open(login_url).read()
-    cookie.save(cookie_file, ignore_discard=True, ignore_expires=True)
+    cookie.save(config['cookie_file'], ignore_discard=True, ignore_expires=True)
+    return True
 
 
 def request_image_url(image_path, image_size='large'):
     cookie = cookielib.MozillaCookieJar()
-    cookie.load(cookie_file, ignore_expires=True, ignore_discard=True)
+    cookie.load(config['cookie_file'], ignore_expires=True, ignore_discard=True)
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie))
     image_url = 'http://picupload.service.weibo.com/interface/pic_upload.php?mime=image%2Fjpeg&data=base64&url=0&markpos=1&logo=&nick=0&marks=1&app=miniblog'
     b = base64.b64encode(file(image_path).read())
@@ -96,27 +100,26 @@ def request_image_url(image_path, image_size='large'):
     result = re.sub(r"<meta.*</script>", "", result)
     image_result = json.loads(result)
     image_id = image_result.get('data').get('pics').get('pic_1').get('pid')
-    return 'http://ww{0}.sinaimg.cn/{1}/{2}'.format(choice(config['weibo_domain']), image_size, image_id)
+    return 'http://ww{0}.sinaimg.cn/{1}/{2}'.format(
+        choice(config['weibo_domain']),
+        image_size,
+        image_id
+        )
 
 
 def get_image(image_path, username=None, password=None):
-    url = ''
     try:
-        url = request_image_url(image_path)
-    except:
-        try:
-            if not (username and password):
-                username = raw_input("输入新浪微博用户名：")
-                password = raw_input("输入新浪微博密码：")
+        return request_image_url(image_path)
+    except Exception, e:
+        # print e
+        for each_account in config['weibo_account']:
+            username = each_account['usn']
+            password = each_account['pwd']
             nonce, pubkey, servertime, rsakv = pre_login()
-            form_data = generate_form_data(nonce, pubkey, servertime, rsakv, username, password)
-            login(form_data)
-            url = request_image_url(image_path)
-            return url
-        except Exception, e:
-            print "登录失败, 程序退出"
-            exit()
-
+            if login(generate_form_data(nonce, pubkey, servertime, rsakv, username, password)):
+                return request_image_url(image_path)
+            else:
+                print 'login failed'
 
 
 if __name__ == '__main__':
@@ -126,6 +129,6 @@ if __name__ == '__main__':
     filename = options.filepath
     if not filename:
         parser.error("Incorrect number of arguments")
-    print get_image(filename, username, password)
+    print get_image(filename)
 
 
