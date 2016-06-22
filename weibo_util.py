@@ -119,7 +119,7 @@ def get_image(image_path, username=None, password=None):
             if login(generate_form_data(nonce, pubkey, servertime, rsakv, username, password)):
                 return request_image_url(image_path)
             else:
-                print 'login failed'
+                print '{}: login failed'.format(username)
 
 
 if __name__ == '__main__':
