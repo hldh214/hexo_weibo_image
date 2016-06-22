@@ -14,6 +14,12 @@ import base64
 from optparse import OptionParser
 
 cookie_file = 'cookie.txt'
+config = {
+    'weibo_usn': '',
+    'weibo_pwd': '',
+    'weibo_domain': [1, 2, 3, 4],
+    
+}
 
 def pre_login():
     pre_login_url = 'http://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=MTUyNTUxMjY3OTY%3D&rsakt=mod&checkpin=1&client=ssologin.js%28v1.4.18%29&_=1458836718537'
