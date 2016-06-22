@@ -1,5 +1,11 @@
 forked from [trytofix](https://github.com/trytofix/hexo_weibo_image)
 
+## 使用方法 ##
+
+``` bash
+python weibo_util.py -f /path/to/the/image
+```
+
 ## 图片尺寸 ##
 
 ww4.sinaimg.cn/图片尺寸/804691d1gw1f53vdieys0j205m05m3yb
