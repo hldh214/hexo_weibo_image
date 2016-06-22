@@ -13,13 +13,10 @@ import binascii
 import base64
 from optparse import OptionParser
 from random import choice
+# import weibo_conf
 
-cookie_file = 'cookie.txt'
-config = {
-    'weibo_usn': '',
-    'weibo_pwd': '',
-    'weibo_domain': [1, 2, 3, 4],
-}
+# print weibo_conf
+# exit()
 
 def pre_login():
     pre_login_url = 'http://login.sina.com.cn/sso/prelogin.php?entry=weibo&callback=sinaSSOController.preloginCallBack&su=MTUyNTUxMjY3OTY%3D&rsakt=mod&checkpin=1&client=ssologin.js%28v1.4.18%29&_=1458836718537'
@@ -115,21 +112,18 @@ def get_image(image_path, username=None, password=None):
             form_data = generate_form_data(nonce, pubkey, servertime, rsakv, username, password)
             login(form_data)
             url = request_image_url(image_path)
+            return url
         except Exception, e:
             print "登录失败, 程序退出"
             exit()
-    return url
+
 
 
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-f", "--file", dest='filepath', help='image file path')
-    parser.add_option("-u", "--username", dest="username", help="weibo username")
-    parser.add_option("-p", "--password", dest="password", help="weibo password")
     options, args = parser.parse_args()
     filename = options.filepath
-    username = options.username
-    password = options.password
     if not filename:
         parser.error("Incorrect number of arguments")
     print get_image(filename, username, password)
