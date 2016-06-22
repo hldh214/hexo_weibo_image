@@ -93,7 +93,7 @@ def request_image_url(image_path):
     result = re.sub(r"<meta.*</script>", "", result)
     image_result = json.loads(result)
     image_id = image_result.get('data').get('pics').get('pic_1').get('pid')
-    return 'http://ww3.sinaimg.cn/large/%s' % image_id
+    return 'http://ww4.sinaimg.cn/large/%s' % image_id
 
 
 def get_image(image_path, username=None, password=None):
